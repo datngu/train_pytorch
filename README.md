@@ -1,4 +1,4 @@
-# Train-Torch
+# Train-Pytorch
 
 Simlified pytorch training!
 
@@ -7,7 +7,7 @@ Simlified pytorch training!
 From Github:
 
 ```console
-git clone https://github.com/datngu/train_torch
+git clone https://github.com/datngu/train_pytorch
 pip install train_pytorch
 ```
 
