@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+train_pytorch/__init__.py
+train_pytorch/trainer.py
+train_pytorch.egg-info/PKG-INFO
+train_pytorch.egg-info/SOURCES.txt
+train_pytorch.egg-info/dependency_links.txt
+train_pytorch.egg-info/requires.txt
+train_pytorch.egg-info/top_level.txt

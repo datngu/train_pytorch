@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: train-pytorch
+Version: 0.0.1
+Summary: Simple trainer for pytorch
+Home-page: https://github.com/datngu/train_pytorch
+Author: Dat T Nguyen
+Author-email: ndat@utexas.edu
+License: MIT
+Keywords: artificial intelligence,deep learning,pytorch
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
