@@ -1,5 +1,5 @@
-__pycache__/
-buid/
-dist/
-train_pytorch.egg-info/
+__pycache__/*
+buid/*
+dist/*
+train_pytorch.egg-info/*
 *.pyc
