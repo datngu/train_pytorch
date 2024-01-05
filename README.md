@@ -2,6 +2,8 @@
 
 Simlified pytorch training!
 
+PyPI project: https://pypi.org/project/train-pytorch/
+
 The package provide:
 - A basic `Trainer` class to facilidate pytorch model training.
 - Some functions to compute common accuracy metrics including:
@@ -91,7 +93,7 @@ test_loader = DataLoader(test_dataset, batch_size=512, shuffle=False)
 
 ```
 
-### 1.2 Buid your model
+### 1.3 Buid your model
 
 ```python
 
@@ -116,7 +118,7 @@ class CNNModel(nn.Module):
 ```
 
 
-### 1.3 Let's train it!
+### 1.4 Let's train it!
 
 ```python
 
@@ -191,7 +193,7 @@ val_loader = DataLoader(val_data,batch_size=64,shuffle=False)
 ```
 
 
-### 2.2 Buid your model
+### 2.3 Buid your model
 
 ```python
 
@@ -211,7 +213,7 @@ class Net(nn.Module):
 ```
 
 
-### 2.3 Let's train it!
+### 2.4 Let's train it!
 
 ```python
 
