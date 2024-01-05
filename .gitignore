@@ -1,5 +1,6 @@
 __pycache__/*
-buid/*
+build/*
 dist/*
 train_pytorch.egg-info/*
 *.pyc
+.gitignore

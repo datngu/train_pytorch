@@ -1,2 +1,0 @@
-tqdm
-torch>=2.0
