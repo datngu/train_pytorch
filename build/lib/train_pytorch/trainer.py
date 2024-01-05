@@ -154,7 +154,8 @@ class Trainer(object):
         for idx, (inputs, labels) in progress_bar:
             inputs, labels = inputs.to(self.device), labels.to(self.device)
             logits = self.model(inputs)
-
+            ## make sure no dimension error for classification tasks
+            logits = torch.squeeze(logits, -1) 
             loss = self.criterion(logits, labels)
             self.optimizer.zero_grad()
             loss.backward()
@@ -193,7 +194,10 @@ class Trainer(object):
             inputs, labels = inputs.to(self.device), labels.to(self.device)
             with torch.no_grad():
                 logits = self.model(inputs)
-
+            
+            ## make sure no dimension error for classification tasks
+            logits = torch.squeeze(logits, -1) 
+            
             loss = self.criterion(logits, labels)
             running_loss += loss.item()
             current_score = 0.0
@@ -237,8 +241,13 @@ class Trainer(object):
         for epoch in range(0, self.num_epochs):
             self.epoch = epoch
             is_improve = False
+            
             train_los, train_score = self._train_epoch(train_loader)
+            # print(f'Finished training epoch [{epoch}/{self.num_epochs}], mean loss: {train_los}, mean score: {train_score}')
+            
             val_los, val_score = self._val_epoch(val_loader)
+            # print(f'Finished validating epoch [{epoch}/{self.num_epochs}], mean loss: {train_los}, mean score: {train_score}')
+
             # save checkpoint
             torch.save(self.model.state_dict(), f'{output}/epoch_{epoch}.th')
             if val_los < self.early_stoper.min_validation_loss:
