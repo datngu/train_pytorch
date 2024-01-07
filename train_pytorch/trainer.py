@@ -26,7 +26,7 @@ def binary_AUC(logits, labels, activation=torch.sigmoid):
     """
 
     # Ensure logits and labels are on the CPU
-    logits, labels = logits.cpu(), labels.cpu()
+    logits, labels = logits.detach().cpu(), labels.cpu()
     # Apply activation function to logits if provided
     if activation is not None:
         predicts = activation(logits)
