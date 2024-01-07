@@ -7,6 +7,7 @@ PyPI project: https://pypi.org/project/train-pytorch/
 The package provide:
 - A basic `Trainer` class to facilidate pytorch model training.
 - Some functions to compute common accuracy metrics including:
+    - `binary_AUC`
     - `binary_accuracy`
     - `multiple_class_accuracy`
     - `regression_r2`
@@ -23,19 +24,31 @@ An example of our provided `binary_accuracy` function is:
 
 def binary_accuracy(logits, labels, cutoff=0):
     """
-    Compute binary classification accuracy score.
-        return accuracy value
+    Calculate binary accuracy given model logits and true labels.
 
-    Args:
-        logits: logits - outputs of the model
-        labels: true labels of data
-        cutoff: default is 0 - model outputs logits
-                can be set to 1 - if model outputs probabilities
+    Parameters:
+        - logits (torch.Tensor): Model logits or predicted scores (output before activation function).
+        - labels (torch.Tensor): True binary labels (0 or 1).
+        - cutoff (float, optional): Threshold for binary classification (default is 0).
+
+    Returns:
+        - float: Binary accuracy.
+
+    Example:
+        logits = torch.tensor([0.2, 0.7, 0.4, 0.9])
+        labels = torch.tensor([0, 1, 0, 1])
+        accuracy = binary_accuracy(logits, labels, cutoff=0.5)
+        print("Binary Accuracy:", accuracy)
     """
+
+    # Ensure logits and labels are on the CPU
     logits, labels = logits.cpu(), labels.cpu()
+    # Convert logits to binary predictions using the specified cutoff
     predicts = (logits > cutoff).float()
-    acc = (predicts == labels).float().mean()
-    return acc.item()
+    # Calculate binary accuracy
+    accuracy = (predicts == labels).float().mean()
+    # Return the binary accuracy as a float
+    return accuracy.item()
 
 ```
 

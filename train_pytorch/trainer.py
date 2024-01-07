@@ -1,60 +1,133 @@
 import os
 import torch
+from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
 
 
 ## accuracies metric functions
 
+def binary_AUC(logits, labels, activation=torch.sigmoid):
+    """
+    Compute the Area Under the Receiver Operating Characteristic Curve (AUC-ROC) for binary classification.
+
+    Parameters:
+        - logits (torch.Tensor): Model logits or predicted scores (output before activation function).
+        - labels (torch.Tensor): True binary labels (0 or 1).
+        - activation (torch.nn.functional, optional): Activation function applied to logits (default is torch.sigmoid).
+
+    Returns:
+        - float: AUC-ROC score.
+
+    Example:
+        logits = torch.tensor([0.2, 0.7, 0.4, 0.9])
+        labels = torch.tensor([0, 1, 0, 1])
+        auc = binary_AUC(logits, labels, activation=torch.sigmoid)
+        print("AUC-ROC Score:", auc)
+    """
+
+    # Ensure logits and labels are on the CPU
+    logits, labels = logits.cpu(), labels.cpu()
+    # Apply activation function to logits if provided
+    if activation is not None:
+        predicts = activation(logits)
+    else:
+        predicts = logits
+
+    # Reshape tensors and convert to NumPy arrays
+    labels = labels.numpy().flatten()
+    predicts = predicts.numpy().flatten()
+    # Calculate AUC-ROC using sklearn's roc_auc_score
+    auc = roc_auc_score(labels, predicts)
+    # Return the AUC-ROC score as a float
+    return auc.item()
+
+
 def binary_accuracy(logits, labels, cutoff=0):
     """
-    Compute binary classification accuracy score.
-        return accuracy value
+    Calculate binary accuracy given model logits and true labels.
 
-    Args:
-        logits: logits - outputs of the model
-        labels: true labels of data
-        cutoff: default is 0 - model outputs logits
-                can be set to 1 - if model outputs probabilities
+    Parameters:
+        - logits (torch.Tensor): Model logits or predicted scores (output before activation function).
+        - labels (torch.Tensor): True binary labels (0 or 1).
+        - cutoff (float, optional): Threshold for binary classification (default is 0).
+
+    Returns:
+        - float: Binary accuracy.
+
+    Example:
+        logits = torch.tensor([0.2, 0.7, 0.4, 0.9])
+        labels = torch.tensor([0, 1, 0, 1])
+        accuracy = binary_accuracy(logits, labels, cutoff=0.5)
+        print("Binary Accuracy:", accuracy)
     """
+
+    # Ensure logits and labels are on the CPU
     logits, labels = logits.cpu(), labels.cpu()
+    # Convert logits to binary predictions using the specified cutoff
     predicts = (logits > cutoff).float()
-    acc = (predicts == labels).float().mean()
-    return acc.item()
+    # Calculate binary accuracy
+    accuracy = (predicts == labels).float().mean()
+    # Return the binary accuracy as a float
+    return accuracy.item()
+
 
 
 def multiple_class_accuracy(logits, labels):
     """
     Compute multiple classification accuracy score.
-        return accuracy value
 
-    Args:
-        logits: logits - outputs of the model
-        labels: true labels of data
+    Parameters:
+        - logits (torch.Tensor): Model logits or predicted scores (output before softmax).
+        - labels (torch.Tensor): True class labels.
+
+    Returns:
+        - float: Accuracy score.
+
+    Example:
+        logits = torch.tensor([[0.2, 0.7, 0.1], [0.8, 0.1, 0.1], [0.3, 0.4, 0.3]])
+        labels = torch.tensor([1, 0, 2])
+        accuracy = multiple_class_accuracy(logits, labels)
+        print("Accuracy:", accuracy)
     """
+
+    # Ensure logits and labels are on the CPU
     logits, labels = logits.cpu(), labels.cpu()
+    # Convert logits to predicted class indices
     predicts = logits.argmax(-1).float()
+    # Calculate accuracy
     acc = (predicts == labels).float().mean()
+    # Return the accuracy as a float
     return acc.item()
 
 
 def regression_r2(logits, labels):
     """
-    Compute pearson correlation coefficent of logits and labels
-        return r2 value
+    Compute the R-squared value (coefficient of determination) between logits and labels.
 
-    Args:
-        logits: logits - outputs of the model
-        labels: true labels of data
+    Parameters:
+        - logits (torch.Tensor): Model logits or predicted values.
+        - labels (torch.Tensor): True labels of the data.
+
+    Returns:
+        - float: R-squared value.
     """
+
+    # Ensure logits and labels are on the CPU
     x, y = logits.cpu(), labels.cpu()
+    # Calculate mean of x and y
     mean_x = torch.mean(x)
     mean_y = torch.mean(y)
+    # Calculate covariance and variances
     cov_xy = torch.sum((x - mean_x) * (y - mean_y))
     var_x = torch.sum((x - mean_x)**2)
     var_y = torch.sum((y - mean_y)**2)
+    # Calculate Pearson correlation coefficient (r)
     r = cov_xy / torch.sqrt(var_x * var_y)
+    # Calculate R-squared value
     r2 = r**2
+    # Return the R-squared value as a float
     return r2.item()
+
 
 
 ####################################

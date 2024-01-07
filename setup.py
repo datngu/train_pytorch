@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as readme_file:
 setup(
   name = 'train_pytorch',
   packages = find_packages(),
-  version = '0.0.3',
+  version = '0.0.4',
   license='MIT',
   description = 'Simple trainer for pytorch.',
   long_description=long_description,
@@ -23,6 +23,7 @@ setup(
   ],
   install_requires=[
     'tqdm',
+    'scikit-learn',
     'torch>=2.0'
   ],
   classifiers=[
