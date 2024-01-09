@@ -4,6 +4,15 @@ from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
 
 
+ 
+## an often use function
+
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
+
+
 ## accuracies metric functions
 
 def binary_AUC(logits, labels, activation=torch.sigmoid):
@@ -222,6 +231,8 @@ class Trainer(object):
         self.model.train()
         running_loss = 0.00
         running_score = 0.00
+        current_score = 0.0
+        aggregated_score = 0.00
 
         progress_bar = tqdm(enumerate(data_loader), total = len(data_loader), position = 0, leave = True)
         for idx, (inputs, labels) in progress_bar:
@@ -235,13 +246,18 @@ class Trainer(object):
             self.optimizer.step()
             
             running_loss += loss.item()
-            current_score = 0.00
-            if self.metric_function is not None:
-                current_score = self.metric_function(logits, labels)
-                running_score += current_score
-            
             aggregated_loss =  running_loss/(idx+1)
-            aggregated_score = running_score/(idx+1)
+
+            if self.metric_function is not None:
+                # handle potention error caused by the metric_function
+                try:
+                    current_score = self.metric_function(logits, labels)
+                except:
+                    current_score = aggregated_score
+
+                running_score += current_score
+                aggregated_score = running_score/(idx+1)
+
             progress_bar.set_description(f"Training [{self.epoch + 1}/{self.num_epochs}], loss [{loss.item():.4f}/{aggregated_loss:.4f}], Score [{current_score:.4f}/{aggregated_score:.4f}]")
         
         return aggregated_loss, aggregated_score
@@ -261,7 +277,8 @@ class Trainer(object):
         self.model.eval()
         running_loss = 0.00
         running_score = 0.00
-
+        current_score = 0.0
+        aggregated_score = 0.00
         progress_bar = tqdm(enumerate(data_loader), total = len(data_loader), position = 0, leave = True)
         for idx, (inputs, labels) in progress_bar:
             inputs, labels = inputs.to(self.device), labels.to(self.device)
@@ -273,13 +290,19 @@ class Trainer(object):
             
             loss = self.criterion(logits, labels)
             running_loss += loss.item()
-            current_score = 0.0
-            if self.metric_function is not None:
-                current_score = self.metric_function(logits, labels)
-                running_score += current_score
-            
             aggregated_loss =  running_loss/(idx+1)
-            aggregated_score = running_score/(idx+1)
+
+            if self.metric_function is not None:
+                # handle potention error caused by the metric_function
+                try:
+                    current_score = self.metric_function(logits, labels)
+                except:
+                    current_score = aggregated_score
+
+                running_score += current_score
+                aggregated_score = running_score/(idx+1)
+
+            
             progress_bar.set_description(f"Validation [{self.epoch + 1}/{self.num_epochs}], loss [{loss.item():.4f}/{aggregated_loss:.4f}], Score [{current_score:.4f}/{aggregated_score:.4f}]")
 
         return aggregated_loss, aggregated_score
@@ -339,7 +362,5 @@ class Trainer(object):
 
 
 
-
-            
 
 
