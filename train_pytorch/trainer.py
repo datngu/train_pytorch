@@ -258,7 +258,7 @@ class Trainer(object):
                 running_score += current_score
                 aggregated_score = running_score/(idx+1)
 
-            progress_bar.set_description(f"Training [{self.epoch + 1}/{self.num_epochs}], loss [{loss.item():.4f}/{aggregated_loss:.4f}], Score [{current_score:.4f}/{aggregated_score:.4f}]")
+            progress_bar.set_description(f"Training [{self.epoch}/{self.num_epochs}], loss [{loss.item():.4f}/{aggregated_loss:.4f}], Score [{current_score:.4f}/{aggregated_score:.4f}]")
         
         return aggregated_loss, aggregated_score
 
@@ -303,7 +303,7 @@ class Trainer(object):
                 aggregated_score = running_score/(idx+1)
 
             
-            progress_bar.set_description(f"Validation [{self.epoch + 1}/{self.num_epochs}], loss [{loss.item():.4f}/{aggregated_loss:.4f}], Score [{current_score:.4f}/{aggregated_score:.4f}]")
+            progress_bar.set_description(f"Validation [{self.epoch}/{self.num_epochs}], loss [{loss.item():.4f}/{aggregated_loss:.4f}], Score [{current_score:.4f}/{aggregated_score:.4f}]")
 
         return aggregated_loss, aggregated_score
 
